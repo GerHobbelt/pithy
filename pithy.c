@@ -325,9 +325,10 @@ PITHY_STATIC_INLINE char *pithy_EmitCopyLessThan63(char *op, size_t offset, size
 }
 
 PITHY_STATIC_INLINE char *pithy_EmitCopy(char *op, size_t offset, size_t len) {
-  while(PITHY_EXPECT_F(len >= 63ul)) { op = pithy_EmitCopyGreaterThan63(op, offset, (len >= 65539ul) ? 65535ul : len); len -= (len >= 65539ul) ? 65535ul : len; }
+  while(PITHY_EXPECT_F(len >= 63ul)) { size_t max = len < 65535ul ? len : len >= 65539ul ? 65535ul : len - 4;
+                                       op = pithy_EmitCopyGreaterThan63(op, offset, max); len -= max; }
   DCHECK((len > 0ul) ? ((len >= 4ul) && (len < 63ul)) : 1);
-  if(   PITHY_EXPECT_T(len >  0ul))  { op = pithy_EmitCopyLessThan63(   op, offset, len);                              len -= len;                              }
+  if(   PITHY_EXPECT_T(len >  0ul))  { op = pithy_EmitCopyLessThan63(   op, offset, len); len -= len; }
   return(op);
 }
 
