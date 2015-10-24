@@ -81,7 +81,11 @@ enum {
 #define PITHY_PREFETCH(ptr)
 #endif // defined (__GNUC__) && (__GNUC__ >= 3) 
 
+#ifdef _MSC_VER
+#define PITHY_STATIC_INLINE    static __forceinline
+#else
 #define PITHY_STATIC_INLINE    static __inline__ PITHY_ATTRIBUTES(always_inline)
+#endif
 #define PITHY_ALIGNED(x)                         PITHY_ATTRIBUTES(aligned(x))
 
 #if defined(NS_BLOCK_ASSERTIONS) && !defined(NDEBUG)
