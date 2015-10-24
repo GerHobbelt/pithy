@@ -91,7 +91,11 @@ enum {
 #ifdef NDEBUG
 #define DCHECK(condition) 
 #else
+#ifdef _MSC_VER
+#define DCHECK(condition) do { if(PITHY_EXPECT_F(!(condition))) { fprintf(stderr, "%s / %s @ %ld: Invalid parameter not satisfying: %s", __FILE__, __FUNCSIG__, (long)__LINE__, #condition); fflush(stderr); abort(); } } while(0)
+#else
 #define DCHECK(condition) do { if(PITHY_EXPECT_F(!(condition))) { fprintf(stderr, "%s / %s @ %ld: Invalid parameter not satisfying: %s", __FILE__, __PRETTY_FUNCTION__, (long)__LINE__, #condition); fflush(stderr); abort(); } } while(0)
+#endif
 #endif
 
 
