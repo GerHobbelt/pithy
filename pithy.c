@@ -358,8 +358,12 @@ size_t pithy_Compress(const char *uncompressed, size_t uncompressedLength, char 
   
   size_t hashTableSize = 0x100ul, maxHashTableSize = 1 << (12ul + (((compressionLevel < 0) ? 0 : (compressionLevel > 9) ? 9 : compressionLevel) / 2ul));
   while((hashTableSize < maxHashTableSize) && (hashTableSize < uncompressedLength)) { hashTableSize <<= 1; }
-  pithy_hashOffset_t stackHashTable[hashTableSize], *heapHashTable = NULL, *hashTable = stackHashTable;
-  if((sizeof(pithy_hashOffset_t) * hashTableSize) >= (1024ul * 128ul)) { if((heapHashTable = malloc(sizeof(pithy_hashOffset_t) * hashTableSize)) == NULL) { return(0ul); } hashTable = heapHashTable; }
+  pithy_hashOffset_t *heapHashTable = NULL, *hashTable = NULL;
+#ifndef _MSC_VER
+  pithy_hashOffset_t stackHashTable[hashTableSize];
+  hashTable = stackHashTable;
+#endif
+  if(hashTable == NULL || (sizeof(pithy_hashOffset_t) * hashTableSize) >= (1024ul * 128ul)) { if((heapHashTable = malloc(sizeof(pithy_hashOffset_t) * hashTableSize)) == NULL) { return(0ul); } hashTable = heapHashTable; }
   size_t x = 0ul;
   for(x = 0ul; x < hashTableSize; x++) { hashTable[x] = uncompressed; }
   
