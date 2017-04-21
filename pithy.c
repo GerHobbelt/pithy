@@ -221,6 +221,7 @@ PITHY_STATIC_INLINE int pithy_Log2Floor(uint32_t n) {
 
 PITHY_STATIC_INLINE int pithy_FindLSBSetNonZero32(uint32_t n) {
   int i = 0, rc = 31;
+  uint32_t shift;
   for(i = 4, shift = 1 << 4; i >= 0; --i) { const uint32_t x = n << shift; if(x != 0u) { n = x; rc -= shift; } shift >>= 1; }
   return(rc);
 }
